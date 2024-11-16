@@ -56,9 +56,8 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version> <!-- Verifique se há uma versão mais recente -->
+            <version>42.7.4</version>
         </dependency>
-
 
         <dependency>
             <groupId>org.junit.jupiter</groupId>

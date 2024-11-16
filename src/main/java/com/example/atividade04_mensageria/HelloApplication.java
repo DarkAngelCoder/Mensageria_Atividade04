@@ -21,18 +21,31 @@ public class HelloApplication extends Application {
     private TableView<Contato> table;
     private ContatoDAO contatoDAO = new ContatoDAO();
 
+    // Campos para inserir o nome e telefone
+    private TextField nomeField;
+    private TextField telefoneField;
+
     @Override
     public void start(Stage primaryStage) {
         table = new TableView<>();
         atualizarTabela();
 
+        // Criando campos de texto para inserir nome e telefone
+        nomeField = new TextField();
+        nomeField.setPromptText("Nome");
+
+        telefoneField = new TextField();
+        telefoneField.setPromptText("Telefone");
+
+        // Botões de Salvar e Excluir
         Button salvarButton = new Button("Salvar");
         salvarButton.setOnAction(e -> salvarContato());
 
         Button excluirButton = new Button("Excluir");
         excluirButton.setOnAction(e -> excluirContato());
 
-        VBox layout = new VBox(10, table, salvarButton, excluirButton);
+        // Layout com campos de texto e botões
+        VBox layout = new VBox(10, table, nomeField, telefoneField, salvarButton, excluirButton);
         Scene scene = new Scene(layout, 600, 400);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Cadastro de Contatos");
@@ -45,7 +58,30 @@ public class HelloApplication extends Application {
     }
 
     private void salvarContato() {
-        // Implementar lógica para capturar dados e salvar contato
+        // Recuperando os dados inseridos no formulário
+        String nome = nomeField.getText();
+        String telefone = telefoneField.getText();
+
+        // Validando os dados
+        if (nome.isEmpty() || telefone.isEmpty()) {
+            showAlert("Erro", "Nome e Telefone são obrigatórios!");
+            return;
+        }
+
+        // Criando o objeto Contato
+        Contato contato = new Contato();
+        contato.setNome(nome);
+        contato.setTelefone(telefone);
+
+        // Salvando no banco de dados
+        contatoDAO.salvarContato(contato);
+
+        // Limpando os campos de texto
+        nomeField.clear();
+        telefoneField.clear();
+
+        // Atualizando a tabela
+        atualizarTabela();
     }
 
     private void excluirContato() {
@@ -54,6 +90,15 @@ public class HelloApplication extends Application {
             contatoDAO.excluirContato(contatoSelecionado.getId());
             atualizarTabela();
         }
+    }
+
+    // Função para exibir alertas
+    private void showAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     public static void main(String[] args) {
